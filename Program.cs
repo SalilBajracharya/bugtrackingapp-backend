@@ -1,5 +1,6 @@
 using BugTracking.Api.Configuration;
 using BugTracking.Api.Data;
+using BugTracking.Api.Services.UserService;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,8 +8,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureDatabase(builder.Configuration);
-
 builder.Services.AddSwaggerGen();
+builder.Services.AddMediatR(cfg =>
+    cfg.RegisterServicesFromAssemblyContaining<Program>()
+);
+
+builder.Services.AddTransient<IUserService, UserService>();
 
 var app = builder.Build();
 
