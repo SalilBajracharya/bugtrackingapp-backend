@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "ObM/atvgkLXJSQHKo8vxunHekGR7GtExwd9WKpSQZcw=",
+  "Source": "BugTracking.Api",
+  "BasePath": "_content/BugTracking.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
