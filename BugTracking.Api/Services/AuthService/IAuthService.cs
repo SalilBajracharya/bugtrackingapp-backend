@@ -6,6 +6,6 @@ namespace BugTracking.Api.Services.AuthService
 {
     public interface IAuthService
     {
-        Task<Result> ValidateUser(LoginRequestDto request);
+        Task<Result<string>> ValidateUser(LoginRequestDto request);
     }
 }

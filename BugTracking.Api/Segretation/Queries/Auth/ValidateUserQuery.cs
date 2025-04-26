@@ -5,21 +5,21 @@ using MediatR;
 
 namespace BugTracking.Api.Segretation.Queries.Auth
 {
-    public record ValidateUserQuery : IRequest<Result>
+    public record ValidateUserQuery : IRequest<Result<string>>
     {
         public string Email { get; set; } = string.Empty;
         public string Username { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
     }
 
-    public class ValidateUserQueryHandler : IRequestHandler<ValidateUserQuery, Result>
+    public class ValidateUserQueryHandler : IRequestHandler<ValidateUserQuery, Result<string>>
     {
         private readonly IAuthService _authService;
         public ValidateUserQueryHandler(IAuthService authService)
         {
             _authService = authService;
         }
-        public Task<Result> Handle(ValidateUserQuery request, CancellationToken cancellationToken)
+        public Task<Result<string>> Handle(ValidateUserQuery request, CancellationToken cancellationToken)
         {
             var loginRequestDto = new LoginRequestDto
             {

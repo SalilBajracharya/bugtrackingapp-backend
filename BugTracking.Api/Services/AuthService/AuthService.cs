@@ -1,5 +1,6 @@
 ﻿using BugTracking.Api.DTOs.Auth;
 using BugTracking.Api.Entities;
+using BugTracking.Api.Services.JwtService;
 using FluentResults;
 using Microsoft.AspNetCore.Identity;
 
@@ -9,12 +10,14 @@ namespace BugTracking.Api.Services.AuthService
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
-        public AuthService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+        private readonly ITokenService _tokenService;
+        public AuthService(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, ITokenService tokenService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _tokenService = tokenService;
         }
-        public async Task<Result> ValidateUser(LoginRequestDto request)
+        public async Task<Result<string>> ValidateUser(LoginRequestDto request)
         {
             var user = _userManager.Users.FirstOrDefault(x => x.UserName == request.Username
                                 || x.Email == request.Email);
@@ -27,7 +30,10 @@ namespace BugTracking.Api.Services.AuthService
             if(!passwordValidate.Succeeded)
                 return Result.Fail("Invalid password");
 
-            return Result.Ok();
+            var roles = await _userManager.GetRolesAsync(user);
+            var token = await _tokenService.GenerateJwtToken(user, roles);
+
+            return Result.Ok(token);
         }
     }
 }

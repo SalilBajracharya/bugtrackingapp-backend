@@ -1,6 +1,7 @@
 ﻿using BugTracking.Api.Segretation.Commands.Users;
 using BugTracking.Api.Segretation.Queries.Users;
 using FluentResults.Extensions.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BugTracking.Api.Controllers
@@ -16,6 +17,7 @@ namespace BugTracking.Api.Controllers
             return result.ToActionResult();
         }
 
+        [Authorize]
         [HttpGet("get-all")]
         public async Task<IActionResult> GetUsers([FromQuery] GetAllUserQuery query)
         {
@@ -23,6 +25,7 @@ namespace BugTracking.Api.Controllers
             return result.ToActionResult();
         }
 
+        [Authorize]
         [HttpGet("get-by-id")]
         public async Task<IActionResult> GetUserById([FromQuery] GetUserQuery query)
         {

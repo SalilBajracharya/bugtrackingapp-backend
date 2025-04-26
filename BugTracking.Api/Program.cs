@@ -1,6 +1,7 @@
 using BugTracking.Api.Configuration;
 using BugTracking.Api.Data;
 using BugTracking.Api.Services.AuthService;
+using BugTracking.Api.Services.JwtService;
 using BugTracking.Api.Services.UserService;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,14 +10,17 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureDatabase(builder.Configuration);
-builder.Services.AddSwaggerGen();
+builder.Services.ConfigureSwagger();
+builder.Services.ConfigureJwt(builder.Configuration);
+
+
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssemblyContaining<Program>()
 );
 
 builder.Services.AddTransient<IUserService, UserService>();
 builder.Services.AddTransient<IAuthService, AuthService>();
-
+builder.Services.AddTransient<ITokenService, TokenService>();
 
 var app = builder.Build();
 
@@ -38,6 +42,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 
