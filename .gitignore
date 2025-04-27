@@ -43,5 +43,5 @@ msbuild.log
 msbuild.err
 msbuild.wrn
 
-/Uploads/
-/logs/
+BugTracking.Api/Uploads/
+BugTracking.Api/logs/
