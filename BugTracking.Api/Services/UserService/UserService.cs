@@ -1,4 +1,5 @@
-﻿using BugTracking.Api.Data;
+﻿using BugTracking.Api.Common.Exceptions;
+using BugTracking.Api.Data;
 using BugTracking.Api.DTOs.User;
 using BugTracking.Api.Entities;
 using FluentResults;
@@ -32,15 +33,14 @@ namespace BugTracking.Api.Services.UserService
 
             if (!result.Succeeded)
             {
-                return Result.Fail("User creation failed")
-                    .WithErrors(result.Errors.Select(e => new Error(e.Description)));
+                throw new GenericException("User creation failed", result.Errors.Select(e => new Error(e.Description)).ToList());
             }
 
             var roleResult = await _userManager.AddToRoleAsync(user, request.Role);
             if (!roleResult.Succeeded)
             {
-                return Result.Fail("Role assignment failed")
-                    .WithErrors(roleResult.Errors.Select(e => new Error(e.Description)));
+                throw new GenericException("Role creation failed", result.Errors.Select(e => new Error(e.Description)).ToList());
+
             }
 
             return Result.Ok();
@@ -72,7 +72,7 @@ namespace BugTracking.Api.Services.UserService
             var user = _userManager.Users.Where(x => x.Id == userId).FirstOrDefault();
             if (user == null)
             {
-                return Result.Fail<UserDto>("User not found");
+                throw new NotFoundException("User not found");
             }
 
             var roles = await _userManager.GetRolesAsync(user);

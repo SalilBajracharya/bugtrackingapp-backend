@@ -1,7 +1,9 @@
-﻿using BugTracking.Api.DTOs.Auth;
+﻿using BugTracking.Api.Common.Exceptions;
+using BugTracking.Api.DTOs.Auth;
 using BugTracking.Api.Entities;
 using BugTracking.Api.Services.JwtService;
 using FluentResults;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 
 namespace BugTracking.Api.Services.AuthService
@@ -23,12 +25,12 @@ namespace BugTracking.Api.Services.AuthService
                                 || x.Email == request.Email);
 
             if (user is null)
-                return Result.Fail("Invalid username or email");
+                throw new BadRequestException("Invalid username or Email");
 
             var passwordValidate = await _signInManager.PasswordSignInAsync(user, request.Password, false, false);
 
             if(!passwordValidate.Succeeded)
-                return Result.Fail("Invalid password");
+                throw new BadRequestException("Invalid password");
 
             var roles = await _userManager.GetRolesAsync(user);
             var token = await _tokenService.GenerateJwtToken(user, roles);

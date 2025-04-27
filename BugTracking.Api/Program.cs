@@ -1,3 +1,4 @@
+using BugTracking.Api.Common.Middlewares;
 using BugTracking.Api.Configuration;
 using BugTracking.Api.Data;
 using BugTracking.Api.Services.AuthService;
@@ -8,6 +9,7 @@ using BugTracking.Api.Services.UserService;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+LoggerConfiguration.ConfigureLogger();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -29,6 +31,7 @@ builder.Services.AddTransient<ICurrentUserService, CurrentUserService>();
 
 var app = builder.Build();
 
+app.UseMiddleware<ExceptionMiddleware>();
 
 using (var scope = app.Services.CreateScope())
 {

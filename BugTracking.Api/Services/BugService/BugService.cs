@@ -1,8 +1,10 @@
 ﻿using Azure.Core;
+using BugTracking.Api.Common.Exceptions;
 using BugTracking.Api.Data;
 using BugTracking.Api.DTOs.BugReport;
 using BugTracking.Api.Services.CurrentUserService;
 using FluentResults;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace BugTracking.Api.Services.BugService
@@ -63,8 +65,7 @@ namespace BugTracking.Api.Services.BugService
                             .ToListAsync();
 
             if (bugs == null || bugs.Count == 0)
-                return Result.Ok(new List<BugDto>())
-                    .WithSuccess("No bugs found for the user");
+                throw new BadRequestException("No bugs found");
 
             var bugDtos = bugs.Select(b => new BugDto
             {
@@ -92,8 +93,7 @@ namespace BugTracking.Api.Services.BugService
                             .ToListAsync();
 
             if (bugs == null || bugs.Count == 0)
-                return Result.Ok(new List<BugDto>())
-                    .WithSuccess("No bugs found for the user");
+                throw new BadRequestException("No bugs found");
 
             var bugDtos = bugs.Select(b => new BugDto
             {
