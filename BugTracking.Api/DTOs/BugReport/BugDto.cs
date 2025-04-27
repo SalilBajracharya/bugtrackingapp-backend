@@ -1,9 +1,9 @@
-﻿using BugTracking.Api.Enum;
-using Microsoft.AspNetCore.Identity;
+﻿using BugTracking.Api.Entities;
+using BugTracking.Api.Enum;
 
-namespace BugTracking.Api.Entities
+namespace BugTracking.Api.DTOs.BugReport
 {
-    public class Bug
+    public class BugDto
     {
         public int Id { get; set; }
         public string Title { get; set; }
@@ -17,6 +17,5 @@ namespace BugTracking.Api.Entities
         public string? DeveloperId { get; set; }
         public AppUser? Developer { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;
-
     }
 }
