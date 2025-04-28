@@ -22,7 +22,7 @@ namespace BugTracking.Api.Services.AuthService
         public async Task<Result<string>> ValidateUser(LoginRequestDto request)
         {
             var user = _userManager.Users.FirstOrDefault(x => x.UserName == request.Username
-                                || x.Email == request.Email);
+                                || x.Email == request.Username);
 
             if (user is null)
                 throw new BadRequestException("Invalid username or Email");
