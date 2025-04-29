@@ -28,6 +28,15 @@ namespace BugTracking.Api.Controllers
         }
 
         [Authorize]
+        [Consumes("multipart/form-data")]
+        [HttpPost("update-bugreport")]
+        public async Task<IActionResult> UpdateBug([FromForm] UpdateBugReportCommand command)
+        {
+            var result = await Mediator.Send(command);
+            return result.ToActionResult();
+        }
+
+        [Authorize]
         [HttpGet("get-by-userid")]
         public async Task<IActionResult> GetBugByUser([FromQuery] GetBugByUserQuery query)
         {

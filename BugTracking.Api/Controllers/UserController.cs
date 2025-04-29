@@ -11,7 +11,7 @@ namespace BugTracking.Api.Controllers
     public class UserController : BaseApiController
     {
         [HttpPost("create-user")]
-        public async Task<IActionResult> CreateUser(CreateUserCommand command)
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserCommand command)
         {
             var result = await Mediator.Send(command);
             return result.ToActionResult();
@@ -28,6 +28,14 @@ namespace BugTracking.Api.Controllers
         [Authorize]
         [HttpGet("get-by-id")]
         public async Task<IActionResult> GetUserById([FromQuery] GetUserQuery query)
+        {
+            var result = await Mediator.Send(query);
+            return result.ToActionResult();
+        }
+
+        [Authorize]
+        [HttpGet("get-devs")]
+        public async Task<IActionResult> GetDevelopers([FromQuery] GetAllDeveloperQuery query)
         {
             var result = await Mediator.Send(query);
             return result.ToActionResult();

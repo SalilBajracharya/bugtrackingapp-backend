@@ -4,6 +4,7 @@ using BugTracking.Api.Data;
 using BugTracking.Api.DTOs.BugReport;
 using BugTracking.Api.Services.CurrentUserService;
 using FluentResults;
+using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
@@ -79,7 +80,8 @@ namespace BugTracking.Api.Services.BugService
                 ReporterId = b.ReporterId,
                 Reporter = b.Reporter?.Fullname,
                 DeveloperId = b.DeveloperId,
-                Developer = b.Developer?.Fullname
+                Developer = b.Developer?.Fullname,
+                Status = b.Status
             }).ToList();
 
             return Result.Ok(bugDtos);
@@ -109,10 +111,47 @@ namespace BugTracking.Api.Services.BugService
                 ReporterId = b.ReporterId,
                 Reporter = b.Reporter?.Fullname,
                 DeveloperId = b.DeveloperId,
-                Developer = b.Developer?.Fullname
+                Developer = b.Developer?.Fullname,
+                Status = b.Status
+
             }).ToList();
 
             return Result.Ok(bugDtos);
+        }
+
+        public async Task<Result<string>> UpdateAsync(UpdateBugDto updateDto)
+        {
+            var existingBug = await _context.Bugs.FindAsync(updateDto.Id);
+
+            if (existingBug == null)
+                throw new BadRequestException("No bugs found");
+
+            existingBug.Title = updateDto.Title;
+            existingBug.Description = updateDto.Description;
+            existingBug.SeverityLevel = updateDto.SeverityLevel;
+            existingBug.ReproductionSteps = updateDto.ReproductionSteps;
+            existingBug.Status = updateDto.Status;
+            existingBug.DeveloperId = updateDto.DeveloperId;
+
+            if (updateDto.File != null && updateDto.File.Length > 0)
+            {
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", "Bugs");
+                Directory.CreateDirectory(uploadsFolder);
+
+                var fileName = $"{Guid.NewGuid()}_{updateDto.File.FileName}";
+                var filePath = Path.Combine(uploadsFolder, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await updateDto.File.CopyToAsync(stream);
+                }
+
+                existingBug.FilePath = Path.Combine("Uploads", "Bugs", fileName).Replace("\\", "/");
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Result.Ok("Bug Report Updated Successfully");
         }
     }
 }

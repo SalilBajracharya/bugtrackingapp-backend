@@ -11,6 +11,7 @@ namespace BugTracking.Api.Services.UserService
     {
         private readonly ApplicationDbContext _ctx;
         private readonly UserManager<AppUser> _userManager;
+        private readonly RoleManager<AppUser> roleManager;
         public UserService(ApplicationDbContext ctx, UserManager<AppUser> userManager)
         {
             _ctx = ctx;
@@ -33,13 +34,13 @@ namespace BugTracking.Api.Services.UserService
 
             if (!result.Succeeded)
             {
-                throw new GenericException("User creation failed", result.Errors.Select(e => new Error(e.Description)).ToList());
+                throw new GenericException("User creation failed : " + result.Errors.First().Description, result.Errors.Select(e => new Error(e.Description)).ToList());
             }
 
             var roleResult = await _userManager.AddToRoleAsync(user, request.Role);
             if (!roleResult.Succeeded)
             {
-                throw new GenericException("Role creation failed", result.Errors.Select(e => new Error(e.Description)).ToList());
+                throw new GenericException("Role creation failed : " + result.Errors.First().Description, result.Errors.Select(e => new Error(e.Description)).ToList());
 
             }
 
@@ -67,6 +68,19 @@ namespace BugTracking.Api.Services.UserService
             return Result.Ok(userDtoList);
         }
 
+        public async Task<Result<List<DeveloperDto>>> GetDevelopers()
+        {
+            var developers = await _userManager.GetUsersInRoleAsync("Developer");
+
+            var developerList = developers.Select(user => new DeveloperDto
+            {
+                DeveloperId = user.Id,
+                FullName = user.Fullname 
+            }).ToList();
+
+            return Result.Ok(developerList);
+        }
+
         public async Task<Result<UserDto>> GetUserByIdAsync(string userId)
         {
             var user = _userManager.Users.Where(x => x.Id == userId).FirstOrDefault();
@@ -89,11 +103,6 @@ namespace BugTracking.Api.Services.UserService
             };
 
             return Result.Ok(userDto);
-        }
-
-        public Task<Result> RemoveRoleFromUserAsync(string userId, string roleName)
-        {
-            throw new NotImplementedException();
         }
     }
 }

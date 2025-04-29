@@ -10,7 +10,7 @@ namespace BugTracking.Api.Services.UserService
         Task<Result<UserDto>> GetUserByIdAsync(string userId);
         Task<Result<List<UserDto>>> GetAllUsersAsync();
         Task<Result> AssignRoleToUserAsync(string userId, string roleName);
-        Task<Result> RemoveRoleFromUserAsync(string userId, string roleName);
         Task<Result> ChangePasswordAsync(ChangePasswordDto request);
+        Task<Result<List<DeveloperDto>>> GetDevelopers();
     }
 }
