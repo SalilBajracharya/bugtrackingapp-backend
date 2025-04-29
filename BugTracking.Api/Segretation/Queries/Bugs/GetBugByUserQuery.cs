@@ -21,7 +21,7 @@ namespace BugTracking.Api.Segretation.Queries.Bugs
         }
         public async Task<Result<List<BugDto>>> Handle(GetBugByUserQuery request, CancellationToken cancellationToken)
         {
-            var result = await _bugService.GetAllBug();
+            var result = await _bugService.GetBugByUser();
             var bugs = result.Value;
 
             if (!string.IsNullOrWhiteSpace(request.search))
