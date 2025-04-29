@@ -77,7 +77,9 @@ namespace BugTracking.Api.Services.BugService
                 FilePath = b.FilePath,
                 CreatedDate = b.CreatedDate,
                 ReporterId = b.ReporterId,
-                DeveloperId = b.DeveloperId
+                Reporter = b.Reporter?.Fullname,
+                DeveloperId = b.DeveloperId,
+                Developer = b.Developer?.Fullname
             }).ToList();
 
             return Result.Ok(bugDtos);
@@ -105,7 +107,9 @@ namespace BugTracking.Api.Services.BugService
                 FilePath = b.FilePath,
                 CreatedDate = b.CreatedDate,
                 ReporterId = b.ReporterId,
-                DeveloperId = b.DeveloperId
+                Reporter = b.Reporter?.Fullname,
+                DeveloperId = b.DeveloperId,
+                Developer = b.Developer?.Fullname
             }).ToList();
 
             return Result.Ok(bugDtos);

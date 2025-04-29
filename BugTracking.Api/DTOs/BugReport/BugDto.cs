@@ -13,9 +13,9 @@ namespace BugTracking.Api.DTOs.BugReport
         public string? ReproductionSteps { get; set; }
         public string? FilePath { get; set; }
         public string ReporterId { get; set; }
-        public AppUser Reporter { get; set; }
-        public string? DeveloperId { get; set; }
-        public AppUser? Developer { get; set; }
+        public string Reporter { get; set; }
+        public string DeveloperId { get; set; }
+        public string Developer { get; set; }
         public DateTime CreatedDate { get; set; } = DateTime.Now;
     }
 }

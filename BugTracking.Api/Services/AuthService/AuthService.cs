@@ -19,7 +19,7 @@ namespace BugTracking.Api.Services.AuthService
             _signInManager = signInManager;
             _tokenService = tokenService;
         }
-        public async Task<Result<string>> ValidateUser(LoginRequestDto request)
+        public async Task<Result<LoginResponseDto>> ValidateUser(LoginRequestDto request)
         {
             var user = _userManager.Users.FirstOrDefault(x => x.UserName == request.Username
                                 || x.Email == request.Username);
@@ -35,7 +35,12 @@ namespace BugTracking.Api.Services.AuthService
             var roles = await _userManager.GetRolesAsync(user);
             var token = await _tokenService.GenerateJwtToken(user, roles);
 
-            return Result.Ok(token);
+            var response = new LoginResponseDto
+            {
+                Token = token
+            };
+
+            return Result.Ok(response);
         }
     }
 }

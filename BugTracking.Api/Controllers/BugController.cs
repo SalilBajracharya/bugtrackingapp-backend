@@ -10,7 +10,7 @@ namespace BugTracking.Api.Controllers
     [Route("api/[controller]")]
     public class BugController : BaseApiController
     {
-        [Authorize(Roles = "User")]
+        [Authorize]
         [Consumes("multipart/form-data")]
         [HttpPost("create-bugreport")]
         public async Task<IActionResult> CreateBug([FromForm] CreateBugReportCommand command)
@@ -19,16 +19,16 @@ namespace BugTracking.Api.Controllers
             return result.ToActionResult();
         }
 
-        [Authorize(Roles = "User")]
-        [HttpPost("delete-bugreport")]
-        public async Task<IActionResult> DeleteBug([FromForm] DeleteBugReportCommand command)
+        [Authorize]
+        [HttpDelete("delete-bugreport")]
+        public async Task<IActionResult> DeleteBug([FromQuery] DeleteBugReportCommand command)
         {
             var result = await Mediator.Send(command);
             return result.ToActionResult();
         }
 
         [Authorize]
-        [HttpPost("get-by-userid")]
+        [HttpGet("get-by-userid")]
         public async Task<IActionResult> GetBugByUser([FromQuery] GetBugByUserQuery query)
         {
             var result = await Mediator.Send(query);
@@ -36,8 +36,8 @@ namespace BugTracking.Api.Controllers
         }
 
         [Authorize]
-        [HttpPost("get-all")]
-        public async Task<IActionResult> GetAll(GetAllBugQuery query)
+        [HttpGet("get-all")]
+        public async Task<IActionResult> GetAll([FromQuery] GetAllBugQuery query)
         {
             var result = await Mediator.Send(query);
             return result.ToActionResult();

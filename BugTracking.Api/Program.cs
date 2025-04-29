@@ -7,10 +7,12 @@ using BugTracking.Api.Services.CurrentUserService;
 using BugTracking.Api.Services.JwtService;
 using BugTracking.Api.Services.UserService;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 LoggerConfiguration.ConfigureLogger();
 
+builder.Services.ConfigureCors();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureDatabase(builder.Configuration);
@@ -32,7 +34,7 @@ builder.Services.AddTransient<ICurrentUserService, CurrentUserService>();
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionMiddleware>();
-
+app.UseCors("AllowAnyOrigin");
 using (var scope = app.Services.CreateScope())
 {
     var serviceProvider = scope.ServiceProvider;
@@ -53,6 +55,10 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
-app.UseStaticFiles();
-
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "Uploads")),
+    RequestPath = "/Uploads"
+});
 app.Run();
